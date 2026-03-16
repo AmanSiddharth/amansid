@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aman Siddharth - Cosmic Social Links</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --primary-color: #6d28d9;
+            --secondary-color: #ec4899;
+            --accent-color: #06b6d4;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            overflow-x: hidden;
+            perspective: 1000px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+        }
+        
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -2;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: transparent url('https://assets.codepen.io/1231630/stars.png') repeat;
+            animation: stars-animation 200s linear infinite;
+        }
+        
+        @keyframes stars-animation {
+            from { background-position: 0 0; }
+            to { background-position: -10000px 5000px; }
+        }
+        
+        .comet {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(255,255,255,0.8);
+            animation: comet-animation 10s linear infinite;
+        }
+        
+        @keyframes comet-animation {
+            0% {
+                transform: translateX(-100px) translateY(-100px);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px)) translateY(calc(100vh + 100px));
+                opacity: 0;
+            }
+        }
+        
+        .social-card {
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .social-card:hover, .social-card.gyro-active {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+        }
+        
+        .social-text {
+            text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            transform: translateZ(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .social-card:hover .social-text {
+            text-shadow: 0 0 15px currentColor, 0 0 30px currentColor;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            box-shadow: inset 0 0 50px rgba(255,255,255,0.1);
+            z-index: -1;
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.2);
+            box-shadow: 0 0 30px rgba(125, 95, 255, 0.5);
+            transition: all 0.3s ease;
+            object-fit: cover;
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(125, 95, 255, 0.8);
+        }
+        
+        .profile-section {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .social-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .social-btn:hover::before {
+            left: 100%;
+        }
+        
+        .footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.2);
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            transition: right 0.5s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .admin-panel.active {
+            right: 0;
+        }
+        
+        .admin-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-toggle.visible {
+            display: flex;
+        }
+        
+        .admin-toggle:hover {
+            background: rgba(30, 41, 59, 0.9);
+            transform: scale(1.1);
+        }
+        
+        .admin-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .admin-overlay.active {
+            display: block;
+        }
+        
+        .social-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .social-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .social-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 5px;
+            color: white;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .login-form {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 10px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            z-index: 1002;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: none;
+        }
+        
+        .login-form.active {
+            display: block;
+        }
+        
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1001;
+            display: none;
+        }
+        
+        .login-overlay.active {
+            display: block;
+        }
+        
+        /* Hidden Admin Access Button */
+        .hidden-admin-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+        
+        .hidden-admin-btn:hover {
+            background: rgba(30, 41, 59, 0.5);
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Auto-save notification */
+        .save-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1003;
+            display: none;
+            animation: fadeInOut 3s ease;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; bottom: 0; }
+            10% { opacity: 1; bottom: 20px; }
+            90% { opacity: 1; bottom: 20px; }
+            100% { opacity: 0; bottom: 0; }
+        }
+        
+        /* Improved mobile responsiveness */
+        @media (max-width: 768px) {
+            .admin-panel {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-section {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem !important;
+            }
+            
+            .hidden-admin-btn {
+                bottom: 70px;
+                right: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .profile-section {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem !important;
+            }
+            
+            .social-card {
+                padding: 1.5rem !important;
+            }
+            
+            .admin-panel {
+                padding: 15px;
+            }
+        }
+        
+        /* Focus styles for accessibility */
+        a:focus, button:focus {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+        
+        /* Skip to main content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #000;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            text-decoration: none;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Auto-save Notification -->
+    <div class="save-notification" id="saveNotification">
+        <i class="fas fa-check-circle"></i> Changes saved automatically
+    </div>
+    
+    <!-- Hidden Admin Access Button -->
+    <div class="hidden-admin-btn" id="hiddenAdminBtn" title="Admin Access">
+        <i class="fas fa-user-shield"></i>
+    </div>
+    
+    <!-- Admin Toggle Button (Hidden by default) -->
+    <div class="admin-toggle" id="adminToggle">
+        <i class="fas fa-cog"></i>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-panel-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white font-['Orbitron']">Admin Panel</h2>
+                <div class="flex items-center text-sm text-green-400">
+                    <i class="fas fa-circle mr-1"></i> Auto-save enabled
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-bold mb-3">Profile Settings</h3>
+                <div class="form-group">
+                    <label for="profileName">Name</label>
+                    <input type="text" id="profileName" class="form-control" value="Aman Siddharth">
+                </div>
+                <div class="form-group">
+                    <label for="profileBio">Bio</label>
+                    <textarea id="profileBio" class="form-control" rows="3">Digital creators exploring the universe of code, design and technology !!!!</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="profileImage">Profile Image URL</label>
+                    <input type="text" id="profileImage" class="form-control" value="https://c4.wallpaperflare.com/wallpaper/433/444/53/anime-landscape-anime-art-anime-scenery-waterfall-wallpaper-preview.jpg">
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-bold mb-3">Social Links</h3>
+                <div id="socialLinksList">
+                    <!-- Social links will be added here dynamically -->
+                </div>
+                <button class="btn btn-success w-full mt-4" id="addSocialLink">
+                    <i class="fas fa-plus mr-2"></i> Add New Social Link
+                </button>
+            </div>
+            
+            <div class="mt-8">
+                <button class="btn btn-danger w-full" id="logoutAdmin">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Close Admin Panel
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Admin Overlay -->
+    <div class="admin-overlay" id="adminOverlay"></div>
+    
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay"></div>
+    
+    <!-- Login Form -->
+    <div class="login-form" id="loginForm">
+        <h2 class="text-xl font-bold mb-4 text-center">Admin Login</h2>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" placeholder="Enter username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="form-control" placeholder="Enter password">
+        </div>
+        <div class="form-group flex items-center">
+            <input type="checkbox" id="rememberMe" class="mr-2">
+            <label for="rememberMe" class="text-sm">Keep me logged in</label>
+        </div>
+        <button class="btn btn-primary w-full" id="loginBtn">
+            <span id="loginBtnText">Login</span>
+        </button>
+        <p class="text-red-400 text-sm mt-3 text-center" id="loginError"></p>
+    </div>
+    
+    <div class="space-bg"></div>
+    <div class="stars"></div>
+    
+    <div id="comets-container"></div>
+    
+    <div class="container mx-auto px-4 py-8 flex-grow flex flex-col items-center justify-center" id="main-content">
+        <div class="max-w-4xl w-full mx-auto z-10">
+            <!-- Profile Section -->
+            <div class="profile-section text-center mb-12">
+                <div class="flex flex-col items-center">
+                    <img src="https://c4.wallpaperflare.com/wallpaper/433/444/53/anime-landscape-anime-art-anime-scenery-waterfall-wallpaper-preview.jpg" 
+                         alt="Aman Siddharth Profile Picture" class="profile-avatar mb-6" id="profileAvatar">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4 text-white font-['Orbitron'] tracking-wider" id="profileTitle">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">Aman</span> 
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Siddharth</span>
+                    </h1>
+                    <p class="text-lg text-white/80 max-w-2xl mx-auto mb-6" id="profileBioText">
+                        Digital creators exploring the universe of code, design and technology !!!!
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="mailto:amansiddharth.work@gmail.com" class="px-4 py-2 bg-purple-600/30 backdrop-blur-sm rounded-full text-white font-medium hover:bg-purple-600/50 transition-all duration-300 border border-purple-400/30 social-btn" id="contactBtn">
+                            <i class="fas fa-envelope mr-2"></i> Contact
+                        </a>
+                        <a href="https://drive.google.com/file/d/1o8cvkyHfnlxUFWBuJ/view?usp=sharing" target="_blank" class="px-4 py-2 bg-cyan-600/30 backdrop-blur-sm rounded-full text-white font-medium hover:bg-cyan-600/50 transition-all duration-300 border border-cyan-400/30 social-btn" id="resumeBtn">
+                            <i class="fas fa-download mr-2"></i> Resume
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 text-white font-['Orbitron'] tracking-wider">
+                Connect With Me Across the Cosmos
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="socialLinksContainer">
+                <!-- Social links will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Made with ?? in the World • © 2025 <span id="footerName">Aman Siddharth</span></p>
+        <p class="mt-2 text-sm">This site uses device orientation for interactive effects</p>
+    </footer>
+
+    <script>
+        // Default social links data for Aman Siddharth
+        const defaultSocialLinks = [
+            {
+                id: 1,
+                platform: "Instagram",
+                icon: "fab fa-instagram",
+                url: "https://www.instagram.com/sid__aman",
+                username: "@sid__aman",
+                description: "Follow my daily adventures",
+                gradient: "from-purple-600 via-pink-600 to-yellow-500",
+                color: "text-white",
+                animationDelay: "0s"
+            },
+            {
+                id: 2,
+                platform: "Twitter",
+                icon: "fab fa-twitter",
+                url: "https://x.com/sid.aman",
+                username: "@sid.aman",
+                description: "My thoughts in 280 characters",
+                gradient: "from-blue-400 to-cyan-500",
+                color: "text-white",
+                animationDelay: "0.3s"
+            },
+            {
+                id: 3,
+                platform: "GitHub",
+                icon: "fab fa-github",
+                url: "https://www.github.com/sid__aman",
+                username: "@sid__aman",
+                description: "Check out my code",
+                gradient: "from-gray-800 to-gray-600",
+                color: "text-white",
+                animationDelay: "0.6s"
+            },
+            {
+                id: 4,
+                platform: "LinkedIn",
+                icon: "fab fa-linkedin-in",
+                url: "https://www.linkedin.com/in/aman-siddharth-2bb330340?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+                username: "Aman Siddharth",
+                description: "Professional profile",
+                gradient: "from-blue-600 to-blue-800",
+                color: "text-white",
+                animationDelay: "0.9s"
+            },
+            {
+                id: 5,
+                platform: "YouTube",
+                icon: "fab fa-youtube",
+                url: "https://youtube.com/@siddharthaman?si=cTIKaUCXTxVwRAF_",
+                username: "@siddharthaman",
+                description: "Watch my videos",
+                gradient: "from-red-600 to-red-800",
+                color: "text-white",
+                animationDelay: "1.2s"
+            },
+            {
+                id: 6,
+                platform: "Discord",
+                icon: "fab fa-discord",
+                url: "https://discord.com/users/sid__aman",
+                username: "#sid",
+                description: "Join my community",
+                gradient: "from-indigo-600 to-purple-800",
+                color: "text-white",
+                animationDelay: "1.5s"
+            }
+        ];
+
+        // Available social media platforms
+        const availablePlatforms = [
+            { name: "Instagram", icon: "fab fa-instagram", gradient: "from-purple-600 via-pink-600 to-yellow-500" },
+            { name: "Twitter", icon: "fab fa-twitter", gradient: "from-blue-400 to-cyan-500" },
+            { name: "GitHub", icon: "fab fa-github", gradient: "from-gray-800 to-gray-600" },
+            { name: "LinkedIn", icon: "fab fa-linkedin-in", gradient: "from-blue-600 to-blue-800" },
+            { name: "YouTube", icon: "fab fa-youtube", gradient: "from-red-600 to-red-800" },
+            { name: "Discord", icon: "fab fa-discord", gradient: "from-indigo-600 to-purple-800" },
+            { name: "Facebook", icon: "fab fa-facebook", gradient: "from-blue-600 to-blue-800" },
+            { name: "TikTok", icon: "fab fa-tiktok", gradient: "from-gray-900 to-pink-600" },
+            { name: "Twitch", icon: "fab fa-twitch", gradient: "from-purple-600 to-pink-600" },
+            { name: "Reddit", icon: "fab fa-reddit", gradient: "from-orange-500 to-red-600" },
+            { name: "Spotify", icon: "fab fa-spotify", gradient: "from-green-500 to-green-700" },
+            { name: "Behance", icon: "fab fa-behance", gradient: "from-blue-600 to-purple-600" },
+            { name: "Dribbble", icon: "fab fa-dribbble", gradient: "from-pink-500 to-purple-600" },
+            { name: "Medium", icon: "fab fa-medium", gradient: "from-gray-800 to-black" },
+            { name: "Pinterest", icon: "fab fa-pinterest", gradient: "from-red-600 to-red-800" },
+            { name: "Snapchat", icon: "fab fa-snapchat", gradient: "from-yellow-400 to-yellow-600" },
+            { name: "Telegram", icon: "fab fa-telegram", gradient: "from-blue-500 to-blue-700" },
+            { name: "WhatsApp", icon: "fab fa-whatsapp", gradient: "from-green-500 to-green-700" }
+        ];
+
+        // Admin credentials
+        const ADMIN_USERNAME = "aman";
+        const ADMIN_PASSWORD = "7500";
+
+        // Initialize data from localStorage or use defaults
+        let socialLinks = JSON.parse(localStorage.getItem('socialLinks')) || defaultSocialLinks;
+        let profileData = JSON.parse(localStorage.getItem('profileData')) || {
+            name: "Aman Siddharth",
+            bio: "Digital creators exploring the universe of code, design and technology !!!!",
+            image: "https://c4.wallpaperflare.com/wallpaper/433/444/53/anime-landscape-anime-art-anime-scenery-waterfall-wallpaper-preview.jpg"
+        };
+
+        // Admin state with persistent login
+        let isAdmin = localStorage.getItem('isAdmin') === 'true';
+        let nextId = Math.max(...socialLinks.map(link => link.id), 0) + 1;
+
+        // DOM Elements
+        const saveNotification = document.getElementById('saveNotification');
+        const hiddenAdminBtn = document.getElementById('hiddenAdminBtn');
+        const adminToggle = document.getElementById('adminToggle');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminOverlay = document.getElementById('adminOverlay');
+        const loginForm = document.getElementById('loginForm');
+        const loginOverlay = document.getElementById('loginOverlay');
+        const socialLinksContainer = document.getElementById('socialLinksContainer');
+        const socialLinksList = document.getElementById('socialLinksList');
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileTitle = document.getElementById('profileTitle');
+        const profileBioText = document.getElementById('profileBioText');
+        const footerName = document.getElementById('footerName');
+        const contactBtn = document.getElementById('contactBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginBtnText = document.getElementById('loginBtnText');
+
+        // Create random comets
+        function createComets() {
+            const container = document.getElementById('comets-container');
+            const cometCount = 5;
+            
+            for (let i = 0; i < cometCount; i++) {
+                const comet = document.createElement('div');
+                comet.className = 'comet';
+                comet.setAttribute('aria-hidden', 'true');
+                
+                // Random position
+                const startX = Math.random() * -100;
+                const startY = Math.random() * -100;
+                
+                // Random delay
+                const delay = Math.random() * 20;
+                
+                comet.style.left = `${startX}px`;
+                comet.style.top = `${startY}px`;
+                comet.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(comet);
+            }
+        }
+
+        // Show save notification
+        function showSaveNotification() {
+            saveNotification.style.display = 'block';
+            setTimeout(() => {
+                saveNotification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Auto-save function with debouncing
+        let saveTimeout;
+        function autoSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveData();
+                showSaveNotification();
+            }, 1000);
+        }
+
+        // Render social links
+        function renderSocialLinks() {
+            socialLinksContainer.innerHTML = '';
+            
+            socialLinks.forEach(link => {
+                const card = document.createElement('div');
+                card.className = `social-card bg-gradient-to-br ${link.gradient} rounded-xl p-6 relative overflow-hidden pulse`;
+                card.style.animationDelay = link.animationDelay;
+                
+                card.innerHTML = `
+                    <div class="glow"></div>
+                    <div class="flex flex-col items-center justify-center h-full">
+                        <i class="${link.icon} text-5xl mb-4 ${link.color} social-text" aria-hidden="true"></i>
+                        <h3 class="text-xl font-bold mb-2 ${link.color} font-['Orbitron'] tracking-wider social-text">${link.platform}</h3>
+                        <p class="${link.color}/80 mb-4 text-center">${link.description}</p>
+                        <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="px-6 py-2 bg-white/20 backdrop-blur-sm rounded-full ${link.color} font-medium hover:bg-white/30 transition-all duration-300 border border-white/10 social-btn">
+                            ${link.username}
+                        </a>
+                    </div>
+                `;
+                
+                socialLinksContainer.appendChild(card);
+            });
+        }
+
+        // Render admin social links list
+        function renderAdminSocialLinks() {
+            socialLinksList.innerHTML = '';
+            
+            socialLinks.forEach(link => {
+                const socialItem = document.createElement('div');
+                socialItem.className = 'social-item';
+                socialItem.innerHTML = `
+                    <div class="social-item-header">
+                        <h4 class="font-bold">${link.platform}</h4>
+                        <div class="social-item-actions">
+                            <button class="btn btn-primary edit-social" data-id="${link.id}">Edit</button>
+                            <button class="btn btn-danger delete-social" data-id="${link.id}">Delete</button>
+                        </div>
+                    </div>
+                    <div class="social-item-content">
+                        <p><strong>URL:</strong> ${link.url}</p>
+                        <p><strong>Username:</strong> ${link.username}</p>
+                    </div>
+                `;
+                
+                socialLinksList.appendChild(socialItem);
+            });
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-social').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    editSocialLink(id);
+                });
+            });
+            
+            document.querySelectorAll('.delete-social').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    deleteSocialLink(id);
+                });
+            });
+        }
+
+        // Add new social link
+        function addSocialLink() {
+            const newLink = {
+                id: nextId++,
+                platform: "New Platform",
+                icon: "fas fa-plus",
+                url: "https://example.com",
+                username: "@username",
+                description: "Connect with me here",
+                gradient: "from-gray-600 to-gray-800",
+                color: "text-white",
+                animationDelay: "0s"
+            };
+            
+            socialLinks.push(newLink);
+            autoSave();
+            renderSocialLinks();
+            renderAdminSocialLinks();
+            
+            // Scroll to the new item and edit it
+            setTimeout(() => {
+                editSocialLink(newLink.id);
+            }, 100);
+        }
+
+        // Edit social link
+        function editSocialLink(id) {
+            const link = socialLinks.find(l => l.id === id);
+            if (!link) return;
+            
+            // Create edit form
+            const editForm = document.createElement('div');
+            editForm.className = 'social-edit-form mt-4 p-4 bg-gray-800 rounded-lg';
+            editForm.innerHTML = `
+                <h4 class="font-bold mb-3">Edit ${link.platform}</h4>
+                <div class="form-group">
+                    <label for="editPlatform-${id}">Platform</label>
+                    <select id="editPlatform-${id}" class="form-control">
+                        ${availablePlatforms.map(platform => 
+                            `<option value="${platform.name}" ${platform.name === link.platform ? 'selected' : ''}>${platform.name}</option>`
+                        ).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editUrl-${id}">URL</label>
+                    <input type="text" id="editUrl-${id}" class="form-control" value="${link.url}">
+                </div>
+                <div class="form-group">
+                    <label for="editUsername-${id}">Username</label>
+                    <input type="text" id="editUsername-${id}" class="form-control" value="${link.username}">
+                </div>
+                <div class="form-group">
+                    <label for="editDescription-${id}">Description</label>
+                    <input type="text" id="editDescription-${id}" class="form-control" value="${link.description}">
+                </div>
+                <div class="flex gap-2">
+                    <button class="btn btn-primary save-edit" data-id="${id}">Save</button>
+                    <button class="btn btn-danger cancel-edit">Cancel</button>
+                </div>
+            `;
+            
+            // Find the social item and append the form
+            const socialItem = document.querySelector(`.social-item button[data-id="${id}"]`).closest('.social-item');
+            socialItem.appendChild(editForm);
+            
+            // Add event listeners for auto-save
+            const inputs = editForm.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', autoSave);
+            });
+            
+            document.getElementById(`editPlatform-${id}`).addEventListener('change', function() {
+                const selectedPlatform = availablePlatforms.find(p => p.name === this.value);
+                if (selectedPlatform) {
+                    link.platform = selectedPlatform.name;
+                    link.icon = selectedPlatform.icon;
+                    link.gradient = selectedPlatform.gradient;
+                }
+                autoSave();
+            });
+            
+            document.querySelector(`.save-edit[data-id="${id}"]`).addEventListener('click', () => {
+                link.url = document.getElementById(`editUrl-${id}`).value;
+                link.username = document.getElementById(`editUsername-${id}`).value;
+                link.description = document.getElementById(`editDescription-${id}`).value;
+                
+                autoSave();
+                renderSocialLinks();
+                renderAdminSocialLinks();
+            });
+            
+            document.querySelector('.cancel-edit').addEventListener('click', () => {
+                renderAdminSocialLinks();
+            });
+        }
+
+        // Delete social link
+        function deleteSocialLink(id) {
+            if (confirm('Are you sure you want to delete this social link?')) {
+                socialLinks = socialLinks.filter(link => link.id !== id);
+                autoSave();
+                renderSocialLinks();
+                renderAdminSocialLinks();
+            }
+        }
+
+        // Update profile display
+        function updateProfileDisplay() {
+            profileAvatar.src = profileData.image;
+            profileTitle.innerHTML = `
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">${profileData.name.split(' ')[0]}</span> 
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">${profileData.name.split(' ').slice(1).join(' ')}</span>
+            `;
+            profileBioText.textContent = profileData.bio;
+            footerName.textContent = profileData.name;
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('socialLinks', JSON.stringify(socialLinks));
+            localStorage.setItem('profileData', JSON.stringify(profileData));
+            localStorage.setItem('nextId', nextId.toString());
+        }
+
+        // Show login form
+        function showLoginForm() {
+            loginForm.classList.add('active');
+            loginOverlay.classList.add('active');
+        }
+
+        // Hide login form
+        function hideLoginForm() {
+            loginForm.classList.remove('active');
+            loginOverlay.classList.remove('active');
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const loginError = document.getElementById('loginError');
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtnText.innerHTML = '<span class="loading"></span> Logging in...';
+            
+            // Simulate login process
+            setTimeout(() => {
+                if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                    isAdmin = true;
+                    localStorage.setItem('isAdmin', 'true');
+                    
+                    // If remember me is checked, save login for 30 days
+                    if (rememberMe) {
+                        const expiryDate = new Date();
+                        expiryDate.setDate(expiryDate.getDate() + 30);
+                        localStorage.setItem('adminExpiry', expiryDate.getTime().toString());
+                    }
+                    
+                    hideLoginForm();
+                    adminToggle.classList.add('visible');
+                    renderAdminSocialLinks();
+                    loginError.textContent = '';
+                    
+                    // Set up auto-save listeners for admin inputs
+                    setupAutoSaveListeners();
+                } else {
+                    loginError.textContent = 'Invalid username or password';
+                }
+                
+                // Reset login button
+                loginBtn.disabled = false;
+                loginBtnText.textContent = 'Login';
+            }, 1000);
+        }
+
+        // Logout function
+        function logout() {
+            isAdmin = false;
+            localStorage.setItem('isAdmin', 'false');
+            localStorage.removeItem('adminExpiry');
+            adminPanel.classList.remove('active');
+            adminOverlay.classList.remove('active');
+            adminToggle.classList.remove('visible');
+        }
+
+        // Toggle admin panel
+        function toggleAdminPanel() {
+            adminPanel.classList.toggle('active');
+            adminOverlay.classList.toggle('active');
+        }
+
+        // Set up auto-save listeners for admin inputs
+        function setupAutoSaveListeners() {
+            // Profile inputs
+            const profileInputs = [
+                document.getElementById('profileName'),
+                document.getElementById('profileBio'),
+                document.getElementById('profileImage')
+            ];
+            
+            profileInputs.forEach(input => {
+                if (input) {
+                    input.addEventListener('input', () => {
+                        profileData.name = document.getElementById('profileName').value;
+                        profileData.bio = document.getElementById('profileBio').value;
+                        profileData.image = document.getElementById('profileImage').value;
+                        autoSave();
+                        updateProfileDisplay();
+                    });
+                }
+            });
+        }
+
+        // Check if admin session is still valid
+        function checkAdminSession() {
+            const expiry = localStorage.getItem('adminExpiry');
+            if (expiry) {
+                const now = new Date().getTime();
+                if (now > parseInt(expiry)) {
+                    // Session expired
+                    localStorage.removeItem('isAdmin');
+                    localStorage.removeItem('adminExpiry');
+                    return false;
+                }
+                return true;
+            }
+            return localStorage.getItem('isAdmin') === 'true';
+        }
+
+        // Initialize the page
+        function init() {
+            createComets();
+            renderSocialLinks();
+            updateProfileDisplay();
+            
+            // Check if admin is logged in (with session validation)
+            isAdmin = checkAdminSession();
+            
+            // Set profile data in admin panel
+            document.getElementById('profileName').value = profileData.name;
+            document.getElementById('profileBio').value = profileData.bio;
+            document.getElementById('profileImage').value = profileData.image;
+            
+            // Show admin toggle if already logged in
+            if (isAdmin) {
+                adminToggle.classList.add('visible');
+                renderAdminSocialLinks();
+                setupAutoSaveListeners();
+            }
+            
+            // Add event listeners
+            hiddenAdminBtn.addEventListener('click', showLoginForm);
+            adminToggle.addEventListener('click', toggleAdminPanel);
+            adminOverlay.addEventListener('click', toggleAdminPanel);
+            loginOverlay.addEventListener('click', hideLoginForm);
+            loginBtn.addEventListener('click', login);
+            document.getElementById('logoutAdmin').addEventListener('click', logout);
+            document.getElementById('addSocialLink').addEventListener('click', addSocialLink);
+            
+            // Add gyroscope and parallax effects
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', handleOrientation);
+            }
+            
+            const cards = document.querySelectorAll('.social-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+                    const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                    card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0) rotateX(0) rotateY(0)';
+                });
+            });
+            
+            // Enter key support for login form
+            document.getElementById('password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+        }
+
+        // Handle gyroscope movement
+        function handleOrientation(event) {
+            const cards = document.querySelectorAll('.social-card');
+            const beta = event.beta;
+            const gamma = event.gamma;
+            
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const screenCenterX = window.innerWidth / 2;
+                const screenCenterY = window.innerHeight / 2;
+                const distanceX = Math.abs(centerX - screenCenterX) / screenCenterX;
+                const distanceY = Math.abs(centerY - screenCenterY) / screenCenterY;
+                
+                const rotateX = (beta / 20) * (1 - distanceY);
+                const rotateY = (gamma / 20) * (1 - distanceX);
+                
+                card.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+                card.classList.add('gyro-active');
+                
+                setTimeout(() => {
+                    card.classList.remove('gyro-active');
+                }, 100);
+            });
+        }
+
+        // Initialize the page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
